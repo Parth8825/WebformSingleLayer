@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -9,9 +12,85 @@ namespace WebApplicationSingleLayer
 {
     public partial class Salesman : System.Web.UI.Page
     {
+        private string _connectionString = ConfigurationManager.ConnectionStrings["InventoryConnectionString"].ConnectionString;
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!Page.IsPostBack)
+            {
+                BindGridView();
+            }
+        }
 
+        protected void btnSubmit_Click(object sender, EventArgs e)
+        {
+            int salesmanID = Convert.ToInt32(txtID.Text);
+            string name = txtSalesmanName.Text;
+            string city = txtCity.Text;
+            float commision = float.Parse(txtCommission.Text);
+
+            var query = $"insert into salesman(salesman_id, name, city, commission) values({salesmanID},'{name}','{city}',{commision});";
+
+            SqlConnection connection = new SqlConnection(_connectionString);
+
+
+            try
+            {
+                connection.Open();
+
+                SqlCommand cmd = new SqlCommand(query, connection);
+
+                cmd.ExecuteNonQuery();
+
+                BindGridView();
+
+                ClearFormFields();
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                throw new Exception(message, ex);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+        private void BindGridView()
+        {
+            SqlConnection connection = new SqlConnection(_connectionString);
+            try
+            {
+                connection.Open();
+
+                var query = "select * from salesman;";
+                SqlCommand cmd = new SqlCommand(query, connection);
+                DataTable DT = new DataTable();
+
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                adapter.Fill(DT);
+
+                if (DT.Rows.Count > 0)
+                {
+                    gvSalesman.DataSource = DT;
+                    gvSalesman.DataBind();
+                }
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                throw new Exception(message, ex);
+            }
+            finally { connection.Close(); }
+
+        }
+
+        private void ClearFormFields()
+        {
+            txtSalesmanName.Text = "";
+            txtID.Text = "";
+            txtCommission.Text = "";
+            txtCity.Text = "";
+            txtID.Focus();
         }
     }
 }
