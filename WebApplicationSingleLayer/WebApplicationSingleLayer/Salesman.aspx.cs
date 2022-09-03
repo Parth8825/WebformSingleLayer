@@ -17,7 +17,7 @@ namespace WebApplicationSingleLayer
         {
             if (!Page.IsPostBack)
             {
-                BindGridView();
+                gvSalesman.DataBind();
             }
         }
 
@@ -40,10 +40,11 @@ namespace WebApplicationSingleLayer
                 SqlCommand cmd = new SqlCommand(query, connection);
 
                 cmd.ExecuteNonQuery();
-
-                BindGridView();
+                gvSalesman.DataBind();
+               // BindGridView();
 
                 ClearFormFields();
+                DateSaveMessage();
             }
             catch (Exception ex)
             {
@@ -55,34 +56,34 @@ namespace WebApplicationSingleLayer
                 connection.Close();
             }
         }
-        private void BindGridView()
-        {
-            SqlConnection connection = new SqlConnection(_connectionString);
-            try
-            {
-                connection.Open();
+        //private void BindGridView()
+        //{
+        //    SqlConnection connection = new SqlConnection(_connectionString);
+        //    try
+        //    {
+        //        connection.Open();
 
-                var query = "select * from salesman;";
-                SqlCommand cmd = new SqlCommand(query, connection);
-                DataTable DT = new DataTable();
+        //        var query = "select * from salesman;";
+        //        SqlCommand cmd = new SqlCommand(query, connection);
+        //        DataTable DT = new DataTable();
 
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                adapter.Fill(DT);
+        //        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+        //        adapter.Fill(DT);
 
-                if (DT.Rows.Count > 0)
-                {
-                    gvSalesman.DataSource = DT;
-                    gvSalesman.DataBind();
-                }
-            }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-                throw new Exception(message, ex);
-            }
-            finally { connection.Close(); }
+        //        if (DT.Rows.Count > 0)
+        //        {
+        //            gvSalesman.DataSource = DT;
+        //            gvSalesman.DataBind();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string message = ex.Message;
+        //        throw new Exception(message, ex);
+        //    }
+        //    finally { connection.Close(); }
 
-        }
+        //}
 
         private void ClearFormFields()
         {
@@ -91,6 +92,18 @@ namespace WebApplicationSingleLayer
             txtCommission.Text = "";
             txtCity.Text = "";
             txtID.Focus();
+        }
+
+        private void DateSaveMessage()
+        {
+            //Insert record here.
+
+            //Display success message.
+            string message = "Salesman details have been saved successfully.";
+            string script = "window.onload = function(){ alert('";
+            script += message;
+            script += "')};";
+            ClientScript.RegisterStartupScript(this.GetType(), "SuccessMessage", script, true);
         }
     }
 }

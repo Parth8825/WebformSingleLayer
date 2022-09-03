@@ -17,7 +17,7 @@ namespace WebApplicationSingleLayer
         {
             if (!Page.IsPostBack)
             {
-                BindGridView();
+                gvOrders.DataBind();
             }
         }
 
@@ -36,9 +36,9 @@ namespace WebApplicationSingleLayer
                 connection.Open();
                 SqlCommand cmd = new SqlCommand(query, connection); 
                 cmd.ExecuteNonQuery();
-                BindGridView();
+                gvOrders.DataBind();
                 ClearFormFields();
-                DateSave();
+                DateSaveMessage();
             }
             catch (Exception ex)
             {
@@ -50,33 +50,33 @@ namespace WebApplicationSingleLayer
                 connection.Close(); 
             }
         }
-        private void BindGridView()
-        {
-            SqlConnection connection = new SqlConnection(_connectinString);
-            try
-            {
-                connection.Open();
+        //private void BindGridView()
+        //{
+        //    SqlConnection connection = new SqlConnection(_connectinString);
+        //    try
+        //    {
+        //        connection.Open();
 
-                var query = "SELECT * FROM orders;";
-                SqlCommand cmd = new SqlCommand(query, connection);
-                DataTable DT = new DataTable();
+        //        var query = "SELECT * FROM orders;";
+        //        SqlCommand cmd = new SqlCommand(query, connection);
+        //        DataTable DT = new DataTable();
 
-                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                adapter.Fill(DT);
+        //        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+        //        adapter.Fill(DT);
 
-                if (DT.Rows.Count > 0)
-                {
-                    gvOrders.DataSource = DT;
-                    gvOrders.DataBind();
-                }
-            }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-                throw new Exception(message, ex);
-            }
-            finally { connection.Close(); }
-        }
+        //        if (DT.Rows.Count > 0)
+        //        {
+        //            gvOrders.DataSource = DT;
+        //            gvOrders.DataBind();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string message = ex.Message;
+        //        throw new Exception(message, ex);
+        //    }
+        //    finally { connection.Close(); }
+        //}
         private void ClearFormFields()
         {
             txtCustId.Text = "";
@@ -86,7 +86,7 @@ namespace WebApplicationSingleLayer
             txtSalsId.Text = "";
             txtOrderNo.Focus();
         }
-        private void DateSave()
+        private void DateSaveMessage()
         {
             //Insert record here.
 
