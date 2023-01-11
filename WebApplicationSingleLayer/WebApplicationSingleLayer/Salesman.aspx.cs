@@ -100,9 +100,9 @@ namespace WebApplicationSingleLayer
 
             //Display success message.
             string message = "Salesman details have been saved successfully.";
-            string script = "window.onload = function(){ alert('";
+            string script = "alert('";
             script += message;
-            script += "')};";
+            script += "');";
             ClientScript.RegisterStartupScript(this.GetType(), "SuccessMessage", script, true);
         }
     }
